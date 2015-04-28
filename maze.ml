@@ -2,13 +2,13 @@ open Tile
 
 let open_door maze i j w h = function
 	| North -> if j > -1 then
-		ignore (maze.(i + j * w).n = true)
+		maze.(i + j * w).n <- true
 	| South -> if j < h then
-		ignore(maze.(i + j * w).s = true)
+		maze.(i + j * w).s <- true
 	| East	-> if i < w then
-		ignore(maze.(i + j * w).e = true)
+		maze.(i + j * w).e <- true
 	| West	-> if i > -1 then
-		ignore(maze.(i + j * w).w = true)
+		maze.(i + j * w).w <- true
 
 let open_door_neighbour maze i j w h = function
 	| North ->	open_door (maze) (i) (j + 1) (w) (h) (South)
