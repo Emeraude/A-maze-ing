@@ -1,4 +1,4 @@
-type tile = (bool * bool * bool * bool * int)
+type tile = { n: bool; s: bool; e: bool; w: bool; id: int }
 
 type dir = North | South | East | West
 
