@@ -1,4 +1,4 @@
-SRC = step1.ml
+SRC = tile.ml maze.ml step1.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 

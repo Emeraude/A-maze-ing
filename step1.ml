@@ -5,7 +5,7 @@ let _ =
 		let width = int_of_string Sys.argv.(1)
 		and height = int_of_string Sys.argv.(2)
 	in if width > 0 && height > 0 && width < 1000 && height < 1000
-	then (* Create maze *)
+	then Maze.create_maze [] 0 0 width height
 	else Printf.eprintf "width and height must be positive and less than 1000\n"
 	with
 		| Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
