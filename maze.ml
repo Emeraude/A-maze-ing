@@ -16,13 +16,17 @@ let open_door_neighbour maze i j w h = function
 	| East	->	open_door (maze) (i + 1) (j) (w) (h) (West)
 	| West	->	open_door (maze) (i - 1) (j) (w) (h) (East)
 
+let generate_maze maze =
+	maze.(0).n <- true
+
 (* Puts a different colour on each tile of the maze *)
 
 let initialize_maze maze w h =
 	for i = 0 to w * h - 1 do
-		maze.(i) <- (false, false, false, false, i)
+		maze.(i) <- Tile.new_tile i
 	done
 
 let create_maze w h =
-	let maze = Array.make (w * h) (false, false, false, false, 0) in
-	initialize_maze maze w h
+	let maze = Array.make (w * h) Tile.default in
+		initialize_maze maze w h;
+		generate_maze maze
