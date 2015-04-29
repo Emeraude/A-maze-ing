@@ -1,10 +1,8 @@
-*.cmo
-*.cmi
-*.cmx
+*.cm[oix]
 *.o
 *.byte
 *.native
 *~
 \#*\#
 .\#*
-step[12345]
+step[1-5]
