@@ -1,9 +1,3 @@
-type tile = { n: bool; s: bool; e: bool; w: bool; id: int }
+type tile = { mutable n: bool; mutable s: bool; mutable e: bool; mutable w: bool; mutable id: int }
 
 type dir = North | South | East | West
-
-let get_n (a, _, _, _, _) = a
-let get_s (_, a, _, _, _) = a
-let get_e (_, _, a, _, _) = a
-let get_w (_, _, _, a, _) = a
-let get_id (_, _, _, _, a) = a
