@@ -63,13 +63,19 @@ let open_random_door maze w h =
     | _ -> false
 
 let print_maze maze w h =
+  for j = 0 to w - 1 do
+    ignore j;
+    Printf.printf "----"
+  done;
+  Printf.printf "-\n";
   for i = 0 to h - 1 do
+    Printf.printf "|";
     for j = 0 to w - 1 do
       match maze.(j + i * w).e with
         | false -> Printf.printf "   |"
         | true  -> Printf.printf "    "
     done;
-    Printf.printf "\n";
+    Printf.printf "\n|";
     for j = 0 to w - 1 do
       match maze.(j + i * w).s with
         | false -> Printf.printf "----"
