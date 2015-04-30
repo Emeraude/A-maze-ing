@@ -1,9 +1,16 @@
 open Tile
 
-let contagion maze w h id1 id2 =
-  for i = 0 to w * h - 1 do
-    if maze.(i).id = id1 then maze.(i).id <- id2
-  done
+let rec contagion maze w h i j id1 id2 =
+  if i < 0 || j < 0 || i = w || j = h then ()
+  else if maze.(i + j * w).id != id1 then ()
+  else
+    begin
+      maze.(i + j * w).id <- id2;
+      contagion maze w h (i - 1) j id1 id2; 
+      contagion maze w h (i + 1) j id1 id2; 
+      contagion maze w h i (j - 1) id1 id2; 
+      contagion maze w h i (j + 1) id1 id2
+    end
 
 let open_door maze i j w h = function
   | North -> maze.(i + j * w).n <- true
@@ -12,14 +19,14 @@ let open_door maze i j w h = function
   | West	-> maze.(i + j * w).w <- true
 
 let open_door_neighbour maze i j w h id = function
-  | North ->	open_door (maze) (i) (j - 1) (w) (h) (South);
-              contagion (maze) (w) (h) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
-  | South ->	open_door (maze) (i) (j + 1) (w) (h) (North);
-              contagion (maze) (w) (h) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
-  | East	->	open_door (maze) (i + 1) (j) (w) (h) (West);
-              contagion (maze) (w) (h) (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
-  | West	->	open_door (maze) (i - 1) (j) (w) (h) (East);
-              contagion (maze) (w) (h) (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
+  | North ->	open_door maze i (j - 1) w h South;
+              contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
+  | South ->	open_door maze i (j + 1) w h North;
+              contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
+  | East	->	open_door (maze) (i + 1) (j) w h (West);
+              contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
+  | West	->	open_door (maze) (i - 1) (j) w h (East);
+              contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
 
 (* Check if door can be open (within the maze's bounds) *)
 
