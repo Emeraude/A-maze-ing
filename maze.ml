@@ -106,4 +106,4 @@ let create_maze w h =
 	let maze = Array.make (w * h) Tile.default in
     initialize_maze maze w h;
     generate_maze maze w h;
-    print_maze maze w h
+    maze

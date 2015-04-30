@@ -1,6 +1,6 @@
 SRC = tile.ml maze.ml step1.ml
 
-#OCAMLFLAGS = -w Aelz -warn-error A -g
+OCAMLFLAGS = -w Aelz -warn-error A -g
 
 all: step1 step1.byte
 
