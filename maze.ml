@@ -66,14 +66,14 @@ let print_maze maze w h =
   for i = 0 to h - 1 do
     for j = 0 to w - 1 do
       match maze.(j + i * w).e with
-        | false -> Printf.printf " |"
-        | true  -> Printf.printf "  "
+        | false -> Printf.printf "   |"
+        | true  -> Printf.printf "    "
     done;
     Printf.printf "\n";
     for j = 0 to w - 1 do
       match maze.(j + i * w).s with
-        | false -> Printf.printf "--"
-        | true  -> Printf.printf " -"
+        | false -> Printf.printf "----"
+        | true  -> Printf.printf "   -"
     done;
     Printf.printf "\n";
   done
@@ -103,7 +103,8 @@ let initialize_maze maze w h =
   done
 
 let create_maze w h =
-	let maze = Array.make (w * h) Tile.default in
-    initialize_maze maze w h;
-    generate_maze maze w h;
-    maze
+  let maze = Array.make (w * h) Tile.default in
+  Random.self_init ();
+  initialize_maze maze w h;
+  generate_maze maze w h;
+  maze
