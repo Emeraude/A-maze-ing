@@ -10,6 +10,5 @@ let _ =
 	    	Draw.draw_maze maze width height
 	else raise (Invalid_argument "wrong input")
 	with
-		| Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
 		| Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
 		| Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be positive and less than 250\n"

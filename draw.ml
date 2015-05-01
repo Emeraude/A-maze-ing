@@ -43,14 +43,14 @@ let draw_tile screen maze w i j multiplier =
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
   if maze.(i + j * w).id = -1 then begin
     let img_path = preloaded_images.(15)
-    and img_path_pos = Sdlvideo.rect (i * multiplier + multiplier / 3) (j * multiplier + multiplier / 3) (multiplier / 3) (multiplier / 3) in
+    and img_path_pos = Sdlvideo.rect (i * multiplier + (2 * multiplier) / 5) (j * multiplier + (2 * multiplier) / 5) (multiplier / 4) (multiplier / 4) in
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
   end
 
 let draw_maze maze w h =
 	Sdl.init [`VIDEO];
 	at_exit Sdl.quit;
-  let multiplier = (800 / w) in
+  let multiplier = if w > h then (800 / w) else (800 / h) in
 	let screen = Sdlvideo.set_video_mode (w * multiplier) (h * multiplier) [`HWSURFACE] in
 	let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
 	Sdlvideo.fill_rect screen colour;
