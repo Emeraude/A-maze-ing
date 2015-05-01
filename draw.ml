@@ -16,6 +16,7 @@ let preloaded_images = [|
     Sdlloader.load_image "./images/1101.png";
     Sdlloader.load_image "./images/1110.png";
     Sdlloader.load_image "./images/0000.png";
+    Sdlloader.load_image "./images/path.png";
   |]
 
 let draw_tile screen maze w i j multiplier =
@@ -39,7 +40,12 @@ let draw_tile screen maze w i j multiplier =
       | {n=false; s=false; e=false; w=false; _} -> assert false in
   let img = preloaded_images.(img_id)
   and img_pos = Sdlvideo.rect (i * multiplier) (j * multiplier) multiplier multiplier in
-  Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ()
+  Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
+  if maze.(i + j * w).id = -1 then begin
+    let img_path = preloaded_images.(15)
+    and img_path_pos = Sdlvideo.rect (i * multiplier + multiplier / 3) (j * multiplier + multiplier / 3) (multiplier / 3) (multiplier / 3) in
+    Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
+  end
 
 let draw_maze maze w h =
 	Sdl.init [`VIDEO];
@@ -54,5 +60,5 @@ let draw_maze maze w h =
     done
   done;
   Sdlvideo.flip screen;
-  Sdltimer.delay 10000;
+  Sdltimer.delay 5000;
   Sdl.quit ()
