@@ -43,7 +43,7 @@ clean:
 	$(RM) *.cmo *.cmi *.o *.cmx
 
 fclean: clean
-	$(RM) step1 step1.byte step1.native step2 step2.native step2.byte
+	$(RM) step1 step1.byte step1.native step2 step2.native step2.byte step3 step3.byte step3.native
 
 re: fclean all
 
