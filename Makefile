@@ -22,10 +22,10 @@ step2: step2.native
 	cp $< $@
 
 step2.byte: $(SRC2)
-	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package ocamlsdl -linkpkg
+	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlgfx -package sdl.sdlimage -linkpkg
 
 step2.native: $(SRC2)
-	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package ocamlsdl -linkpkg
+	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlgfx -package sdl.sdlimage -linkpkg
 
 clean:
 	$(RM) *.cmo *.cmi *.o *.cmx
