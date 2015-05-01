@@ -1,3 +1,4 @@
+open Door
 open Tile
 
 let rec contagion maze w h i j id1 id2 =
@@ -6,17 +7,17 @@ let rec contagion maze w h i j id1 id2 =
   else
     begin
       maze.(i + j * w).id <- id2;
-      contagion maze w h (i - 1) j id1 id2; 
-      contagion maze w h (i + 1) j id1 id2; 
-      contagion maze w h i (j - 1) id1 id2; 
+      contagion maze w h (i - 1) j id1 id2;
+      contagion maze w h (i + 1) j id1 id2;
+      contagion maze w h i (j - 1) id1 id2;
       contagion maze w h i (j + 1) id1 id2
     end
 
 let open_door maze i j w h = function
-  | North -> maze.(i + j * w).n <- true
-  | South -> maze.(i + j * w).s <- true
-  | East	-> maze.(i + j * w).e <- true
-  | West	-> maze.(i + j * w).w <- true
+  | North -> maze.(i + j * w).n <- Opened
+  | South -> maze.(i + j * w).s <- Opened
+  | East	-> maze.(i + j * w).e <- Opened
+  | West	-> maze.(i + j * w).w <- Opened
 
 let open_door_neighbour maze i j w h id = function
   | North ->	open_door maze i (j - 1) w h South;
@@ -79,14 +80,14 @@ let print_maze maze w h =
     Printf.printf "|";
     for j = 0 to w - 1 do
       match maze.(j + i * w).e with
-        | false -> Printf.printf "   |"
-        | true  -> Printf.printf "    "
+        | Closed -> Printf.printf "   |"
+        | Opened  -> Printf.printf "    "
     done;
     Printf.printf "\n|";
     for j = 0 to w - 1 do
       match maze.(j + i * w).s with
-        | false -> Printf.printf "----"
-        | true  -> Printf.printf "   -"
+        | Closed -> Printf.printf "----"
+        | Opened  -> Printf.printf "   -"
     done;
     Printf.printf "\n";
   done

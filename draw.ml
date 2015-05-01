@@ -1,3 +1,4 @@
+open Door
 open Tile
 
 let preloaded_images = [|
@@ -22,22 +23,22 @@ let preloaded_images = [|
 let draw_tile screen maze w i j multiplier =
   let img_id =
     match maze.(j + i * w) with
-      | {n=true; s=true; e=true; w=false; _} -> 0
-      | {n=true; s=true; e=false; w=true; _} -> 1
-      | {n=true; s=true; e=false; w=false; _} -> 2
-      | {n=true; s=false; e=true; w=true; _} -> 3
-      | {n=true; s=false; e=true; w=false; _} -> 4
-      | {n=true; s=false; e=false; w=true; _} -> 5
-      | {n=true; s=false; e=false; w=false; _} -> 6
-      | {n=false; s=true; e=true; w=true; _} -> 7
-      | {n=false; s=true; e=true; w=false; _} -> 8
-      | {n=false; s=true; e=false; w=true; _} -> 9
-      | {n=false; s=true; e=false; w=false; _} -> 10
-      | {n=false; s=false; e=true; w=true; _} -> 11
-      | {n=false; s=false; e=true; w=false; _} -> 12
-      | {n=false; s=false; e=false; w=true; _} -> 13
-      | {n=true; s=true; e=true; w=true; _} -> 14
-      | {n=false; s=false; e=false; w=false; _} -> assert false in
+      | {n=Opened; s=Opened; e=Opened; w=Closed; _} -> 0
+      | {n=Opened; s=Opened; e=Closed; w=Opened; _} -> 1
+      | {n=Opened; s=Opened; e=Closed; w=Closed; _} -> 2
+      | {n=Opened; s=Closed; e=Opened; w=Opened; _} -> 3
+      | {n=Opened; s=Closed; e=Opened; w=Closed; _} -> 4
+      | {n=Opened; s=Closed; e=Closed; w=Opened; _} -> 5
+      | {n=Opened; s=Closed; e=Closed; w=Closed; _} -> 6
+      | {n=Closed; s=Opened; e=Opened; w=Opened; _} -> 7
+      | {n=Closed; s=Opened; e=Opened; w=Closed; _} -> 8
+      | {n=Closed; s=Opened; e=Closed; w=Opened; _} -> 9
+      | {n=Closed; s=Opened; e=Closed; w=Closed; _} -> 10
+      | {n=Closed; s=Closed; e=Opened; w=Opened; _} -> 11
+      | {n=Closed; s=Closed; e=Opened; w=Closed; _} -> 12
+      | {n=Closed; s=Closed; e=Closed; w=Opened; _} -> 13
+      | {n=Opened; s=Opened; e=Opened; w=Opened; _} -> 14
+      | {n=Closed; s=Closed; e=Closed; w=Closed; _} -> assert false in
   let img = preloaded_images.(img_id)
   and img_pos = Sdlvideo.rect (j * multiplier) (i * multiplier) multiplier multiplier in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();

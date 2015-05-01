@@ -1,6 +1,6 @@
-SRC1 = tile.ml maze.ml step1.ml
-SRC2 = tile.ml maze.ml draw.ml step2.ml
-SRC3 = tile.ml maze.ml draw.ml solve.ml step3.ml
+SRC1 = door.ml tile.ml maze.ml step1.ml
+SRC2 = door.ml tile.ml maze.ml draw.ml step2.ml
+SRC3 = door.ml tile.ml maze.ml draw.ml solve.ml step3.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 
@@ -34,10 +34,10 @@ step3: step3.native
 	cp $< $@
 
 step3.byte: $(SRC3)
-	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlgfx -package sdl.sdlimage -linkpkg
+	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
 
 step3.native: $(SRC3)
-	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlgfx -package sdl.sdlimage -linkpkg
+	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
 
 clean:
 	$(RM) *.cmo *.cmi *.o *.cmx

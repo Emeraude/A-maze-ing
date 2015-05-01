@@ -8,13 +8,13 @@ let rec solve maze curr last finish w h =
 		maze.(curr).id <- -1;
 		true;
 	end
-	else if (maze.(curr).n && curr - w != last
+	else if (Door.isOpened maze.(curr).n && curr - w != last
 			&& solve maze (curr - w) curr finish w h)
-			|| (maze.(curr).s && curr + w != last
+			|| (Door.isOpened maze.(curr).s && curr + w != last
 			&& solve maze (curr + w) curr finish w h)
-			|| (maze.(curr).e && curr + 1 != last
+			|| (Door.isOpened maze.(curr).e && curr + 1 != last
 			&& solve maze (curr + 1) curr finish w h)
-			|| (maze.(curr).w && curr - 1 != last
+			|| (Door.isOpened maze.(curr).w && curr - 1 != last
 			&& solve maze (curr - 1) curr finish w h)
 	then begin
 		maze.(curr).id <- -1;
