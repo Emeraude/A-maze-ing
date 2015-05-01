@@ -99,18 +99,14 @@ let generate_maze maze w h =
   and max = ref (w * h - 1) in
     while converted < max do
       if open_random_door maze w h then converted := !converted + 1;
-    done
+    done;
+  maze
 
 (* Puts a different colour on each tile of the maze *)
 
-let initialize_maze maze w h =
-  for i = 0 to w * h - 1 do
-    maze.(i) <- Tile.new_tile i
-  done
+let initialize_maze w h =
+  Array.mapi (fun i a -> Tile.new_tile i) (Array.make(w *h) Tile.default)
 
 let create_maze w h =
-  let maze = Array.make (w * h) Tile.default in
   Random.self_init ();
-  initialize_maze maze w h;
-  generate_maze maze w h;
-  maze
+  generate_maze (initialize_maze w h) w h;
