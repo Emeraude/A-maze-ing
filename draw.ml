@@ -21,7 +21,7 @@ let preloaded_images = [|
 
 let draw_tile screen maze w i j multiplier =
   let img_id =
-    match maze.(i + j * w) with
+    match maze.(j + i * w) with
       | {n=true; s=true; e=true; w=false; _} -> 0
       | {n=true; s=true; e=false; w=true; _} -> 1
       | {n=true; s=true; e=false; w=false; _} -> 2
@@ -39,11 +39,11 @@ let draw_tile screen maze w i j multiplier =
       | {n=true; s=true; e=true; w=true; _} -> 14
       | {n=false; s=false; e=false; w=false; _} -> assert false in
   let img = preloaded_images.(img_id)
-  and img_pos = Sdlvideo.rect (i * multiplier) (j * multiplier) multiplier multiplier in
+  and img_pos = Sdlvideo.rect (j * multiplier) (i * multiplier) multiplier multiplier in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
-  if maze.(i + j * w).id = -1 then begin
+  if maze.(j + i * w).id = -1 then begin
     let img_path = preloaded_images.(15)
-    and img_path_pos = Sdlvideo.rect (i * multiplier + (2 * multiplier) / 5) (j * multiplier + (2 * multiplier) / 5) (multiplier / 4) (multiplier / 4) in
+    and img_path_pos = Sdlvideo.rect (j * multiplier + (2 * multiplier) / 5) (i * multiplier + (2 * multiplier) / 5) (multiplier / 4) (multiplier / 4) in
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
   end
 
