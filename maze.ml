@@ -92,14 +92,6 @@ let print_maze maze w h =
     Printf.printf "\n";
   done
 
-let print_numbers maze w h =
-  for i = 0 to h - 1 do
-    for j = 0 to w - 1 do
-      Printf.printf "%d " maze.(j + i * w).id
-    done;
-    Printf.printf "\n";
-  done
-
 (* Converted represents the number of tiles converted *)
 
 let generate_maze maze w h =
