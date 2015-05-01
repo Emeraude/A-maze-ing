@@ -6,7 +6,7 @@ let _ =
 		and height = int_of_string Sys.argv.(2)
 	in if width > 1 && height > 1 && width < 250 && height < 250
 	  then let maze = Maze.create_maze width height in
-	       Maze.print_maze maze width height
+	       Display.print maze width height
 	else raise (Invalid_argument "wrong input")
 	with
 		| Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg

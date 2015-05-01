@@ -1,4 +1,4 @@
-SRC1 = door.ml tile.ml maze.ml step1.ml
+SRC1 = door.ml tile.ml maze.ml display.ml step1.ml
 SRC2 = door.ml tile.ml maze.ml draw.ml step2.ml
 SRC3 = door.ml tile.ml maze.ml draw.ml solve.ml step3.ml
 
