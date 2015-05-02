@@ -13,13 +13,13 @@ let rec contagion maze w h i j id1 id2 =
 
 let open_door_neighbour maze i j w h id = function
   | North ->	Tile.open_door maze i (j - 1) w h South;
-		contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
+    contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
   | South ->	Tile.open_door maze i (j + 1) w h North;
-		contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
+    contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
   | East  ->	Tile.open_door (maze) (i + 1) (j) w h (West);
-		contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
+    contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
   | West  ->	Tile.open_door (maze) (i - 1) (j) w h (East);
-		contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
+    contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
 
 let open_dir_door maze next cond dir w h i j =
   if cond || maze.(i + j * w).id = maze.(i + j * w + next).id then false
@@ -48,9 +48,9 @@ let open_random_door maze w h =
 let generate_maze maze w h =
   let converted = ref 0
   and max = ref (w * h - 1) in
-    while converted < max do
-      if open_random_door maze w h then converted := !converted + 1;
-    done;
+  while converted < max do
+    if open_random_door maze w h then converted := !converted + 1;
+  done;
   maze
 
 (* Puts a different colour on each tile of the maze *)

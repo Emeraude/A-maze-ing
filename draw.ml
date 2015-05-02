@@ -2,23 +2,23 @@ open Door
 open Tile
 
 let preloaded_images = [|
-    Sdlloader.load_image "./images/0001.png";
-    Sdlloader.load_image "./images/0010.png";
-    Sdlloader.load_image "./images/0011.png";
-    Sdlloader.load_image "./images/0100.png";
-    Sdlloader.load_image "./images/0101.png";
-    Sdlloader.load_image "./images/0110.png";
-    Sdlloader.load_image "./images/0111.png";
-    Sdlloader.load_image "./images/1000.png";
-    Sdlloader.load_image "./images/1001.png";
-    Sdlloader.load_image "./images/1010.png";
-    Sdlloader.load_image "./images/1011.png";
-    Sdlloader.load_image "./images/1100.png";
-    Sdlloader.load_image "./images/1101.png";
-    Sdlloader.load_image "./images/1110.png";
-    Sdlloader.load_image "./images/0000.png";
-    Sdlloader.load_image "./images/path.png";
-  |]
+  Sdlloader.load_image "./images/0001.png";
+  Sdlloader.load_image "./images/0010.png";
+  Sdlloader.load_image "./images/0011.png";
+  Sdlloader.load_image "./images/0100.png";
+  Sdlloader.load_image "./images/0101.png";
+  Sdlloader.load_image "./images/0110.png";
+  Sdlloader.load_image "./images/0111.png";
+  Sdlloader.load_image "./images/1000.png";
+  Sdlloader.load_image "./images/1001.png";
+  Sdlloader.load_image "./images/1010.png";
+  Sdlloader.load_image "./images/1011.png";
+  Sdlloader.load_image "./images/1100.png";
+  Sdlloader.load_image "./images/1101.png";
+  Sdlloader.load_image "./images/1110.png";
+  Sdlloader.load_image "./images/0000.png";
+  Sdlloader.load_image "./images/path.png";
+		       |]
 
 let draw_tile screen maze w i j multiplier =
   let img_id =
@@ -49,13 +49,13 @@ let draw_tile screen maze w i j multiplier =
   end
 
 let draw_maze maze w h =
-	Sdl.init [`VIDEO];
-	at_exit Sdl.quit;
+  Sdl.init [`VIDEO];
+  at_exit Sdl.quit;
   let multiplier = if w > h then (800 / w) else (800 / h) in
-	let screen = Sdlvideo.set_video_mode (w * multiplier) (h * multiplier) [`HWSURFACE] in
-	let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
-	Sdlvideo.fill_rect screen colour;
-	for i = 0 to h - 1 do
+  let screen = Sdlvideo.set_video_mode (w * multiplier) (h * multiplier) [`HWSURFACE] in
+  let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
+  Sdlvideo.fill_rect screen colour;
+  for i = 0 to h - 1 do
     for j = 0 to w - 1 do
       draw_tile screen maze w i j multiplier
     done

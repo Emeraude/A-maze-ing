@@ -7,7 +7,7 @@ type dir = North | South | East | West
 let default = { n = Closed; s = Closed; e = Closed; w = Closed; id = 0 }
 
 let new_tile i =
-	{ n = Closed; s = Closed; e = Closed; w = Closed; id = i }
+  { n = Closed; s = Closed; e = Closed; w = Closed; id = i }
 
 let open_door maze i j w h = function
   | North -> maze.(i + j * w).n <- Opened
