@@ -1,6 +1,7 @@
 SRC1 = door.ml tile.ml maze.ml display.ml step1.ml
 SRC2 = door.ml tile.ml maze.ml draw.ml step2.ml
 SRC3 = door.ml tile.ml maze.ml draw.ml solve.ml step3.ml
+SRC4 = door.ml tile.ml maze.ml draw.ml draw_hex.ml solve.ml step4.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 
@@ -37,6 +38,17 @@ step3.byte: $(SRC3)
 	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
 
 step3.native: $(SRC3)
+	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
+
+# Step4
+
+step4: step4.native
+	cp $< $@
+
+step4.byte: $(SRC4)
+	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
+
+step4.native: $(SRC4)
 	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
 
 clean:
