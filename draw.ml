@@ -1,6 +1,8 @@
 open Door
 open Tile
 open Maze
+open Sdlevent
+open Sdlkey
 
 let preloaded_images = [|
   Sdlloader.load_image "./images/0001.png";
@@ -49,9 +51,13 @@ let draw_tile screen maze i j multiplier =
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
   end
 
+let rec wait_for_escape () =
+  match wait_event () with
+    | KEYDOWN {keysym=KEY_ESCAPE; _} ->	Sdl.quit ()
+    | _ ->				wait_for_escape ()
+
 let draw_maze maze =
   Sdl.init [`VIDEO];
-  at_exit Sdl.quit;
   let multiplier = if maze.width > maze.height then (800 / maze.width) else (800 / maze.height) in
   let screen = Sdlvideo.set_video_mode (maze.width * multiplier) (maze.height * multiplier) [`HWSURFACE] in
   let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
@@ -62,5 +68,4 @@ let draw_maze maze =
     done
   done;
   Sdlvideo.flip screen;
-  Sdltimer.delay 5000;
-  Sdl.quit ()
+  wait_for_escape ()
