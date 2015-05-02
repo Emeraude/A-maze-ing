@@ -1,5 +1,6 @@
 open Door
 open Tile
+open Maze
 
 let preloaded_images = [|
   Sdlloader.load_image "./images/0001.png";
@@ -20,9 +21,9 @@ let preloaded_images = [|
   Sdlloader.load_image "./images/path.png";
 		       |]
 
-let draw_tile screen maze w i j multiplier =
+let draw_tile screen maze i j multiplier =
   let img_id =
-    match maze.(j + i * w) with
+    match (Maze.access maze j i) with
       | {n=Opened; s=Opened; e=Opened; w=Closed; _} -> 0
       | {n=Opened; s=Opened; e=Closed; w=Opened; _} -> 1
       | {n=Opened; s=Opened; e=Closed; w=Closed; _} -> 2
@@ -42,22 +43,22 @@ let draw_tile screen maze w i j multiplier =
   let img = preloaded_images.(img_id)
   and img_pos = Sdlvideo.rect (j * multiplier) (i * multiplier) multiplier multiplier in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
-  if maze.(j + i * w).id = -1 then begin
+  if (Maze.access maze j i).id = -1 then begin
     let img_path = preloaded_images.(15)
     and img_path_pos = Sdlvideo.rect (j * multiplier + (2 * multiplier) / 5) (i * multiplier + (2 * multiplier) / 5) (multiplier / 4) (multiplier / 4) in
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
   end
 
-let draw_maze maze w h =
+let draw_maze maze =
   Sdl.init [`VIDEO];
   at_exit Sdl.quit;
-  let multiplier = if w > h then (800 / w) else (800 / h) in
-  let screen = Sdlvideo.set_video_mode (w * multiplier) (h * multiplier) [`HWSURFACE] in
+  let multiplier = if maze.width > maze.height then (800 / maze.width) else (800 / maze.height) in
+  let screen = Sdlvideo.set_video_mode (maze.width * multiplier) (maze.height * multiplier) [`HWSURFACE] in
   let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
   Sdlvideo.fill_rect screen colour;
-  for i = 0 to h - 1 do
-    for j = 0 to w - 1 do
-      draw_tile screen maze w i j multiplier
+  for i = 0 to maze.height - 1 do
+    for j = 0 to maze.width - 1 do
+      draw_tile screen maze i j multiplier
     done
   done;
   Sdlvideo.flip screen;

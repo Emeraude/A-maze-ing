@@ -1,55 +1,60 @@
 open Tile
 
-let rec contagion maze w h i j id1 id2 =
-  if i < 0 || j < 0 || i = w || j = h || maze.(i + j * w).id != id1 then ()
+type maze = { mutable tiles: Tile.tile array; width: int; height: int }
+
+let access maze i j =
+  maze.tiles.(i + j * maze.width)
+
+let rec contagion maze i j id1 id2 =
+  if i < 0 || j < 0 || i = maze.width || j = maze.height || (access maze i j).id != id1 then ()
   else
     begin
-      maze.(i + j * w).id <- id2;
-      contagion maze w h (i - 1) j id1 id2;
-      contagion maze w h (i + 1) j id1 id2;
-      contagion maze w h i (j - 1) id1 id2;
-      contagion maze w h i (j + 1) id1 id2
+      (access maze i j).id <- id2;
+      contagion maze (i - 1) j id1 id2;
+      contagion maze (i + 1) j id1 id2;
+      contagion maze i (j - 1) id1 id2;
+      contagion maze i (j + 1) id1 id2
     end
 
-let open_door_neighbour maze i j w h id = function
-  | North ->	Tile.open_door maze i (j - 1) w h South;
-    contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
-  | South ->	Tile.open_door maze i (j + 1) w h North;
-    contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
-  | East  ->	Tile.open_door (maze) (i + 1) (j) w h (West);
-    contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
-  | West  ->	Tile.open_door (maze) (i - 1) (j) w h (East);
-    contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
+let open_door_neighbour maze i j id = function
+  | North ->	Tile.open_door (access maze i (j - 1)) South;
+    contagion maze i (j - 1) (access maze i (j - 1)).id (access maze i j).id
+  | South ->	Tile.open_door (access maze i (j + 1)) North;
+    contagion maze i (j + 1) (access maze i (j + 1)).id (access maze i j).id
+  | East  ->	Tile.open_door (access maze (i + 1) j) West;
+    contagion maze (i + 1) j (access maze (i + 1) j).id (access maze i j).id
+  | West  ->	Tile.open_door (access maze (i - 1) j) East;
+    contagion maze (i - 1) j (access maze (i - 1) j).id (access maze i j).id
 
-let open_dir_door maze next cond dir w h i j =
-  if cond || maze.(i + j * w).id = maze.(i + j * w + next).id then false
+let open_dir_door maze next cond dir i j =
+  if cond || (access maze i j).id = (access maze (i + next) j).id then false
   else
     begin
-      open_door maze i j w h dir;
-      open_door_neighbour maze i j w h maze.(i + j * w).id dir;
+      Tile.open_door (access maze i j) dir;
+      open_door_neighbour maze i j (access maze i j).id dir;
       true;
     end
 
 (* Check if door can be open (within the maze's bounds) *)
 
-let open_random_door maze w h =
-  let i = Random.int w
-  and j = Random.int h
+let open_random_door maze =
+  let i = Random.int maze.width
+  and j = Random.int maze.height
   and dir = Random.int 4 in
   match dir with
-    | 0 -> open_dir_door maze (-w) (j = 0) North w h i j
-    | 1 -> open_dir_door maze w (j = h - 1) South w h i j
-    | 2 -> open_dir_door maze 1 (i = w - 1) East w h i j
-    | 3 -> open_dir_door maze (-1) (i = 0) West w h i j
+    | 0 -> open_dir_door maze (-maze.width) (j = 0) North i j
+    | 1 -> open_dir_door maze maze.width (j = maze.height - 1) South i j
+    | 2 -> open_dir_door maze 1 (i = maze.width - 1) East i j
+    | 3 -> open_dir_door maze (-1) (i = 0) West i j
     | _ -> false
 
 (* Converted represents the number of tiles converted *)
 
-let generate_maze maze w h =
+let generate_maze maze =
   let converted = ref 0
-  and max = ref (w * h - 1) in
+  and max = ref (maze.width * maze.height - 1) in
   while converted < max do
-    if open_random_door maze w h then converted := !converted + 1;
+    if open_random_door maze then converted := !converted + 1;
   done;
   maze
 
@@ -60,4 +65,4 @@ let initialize_maze w h =
 
 let create_maze w h =
   Random.self_init ();
-  generate_maze (initialize_maze w h) w h;
+  generate_maze { tiles = (initialize_maze w h); width = w; height = h }

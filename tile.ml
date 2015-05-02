@@ -9,8 +9,8 @@ let default = { n = Closed; s = Closed; e = Closed; w = Closed; id = 0 }
 let new_tile i =
   { n = Closed; s = Closed; e = Closed; w = Closed; id = i }
 
-let open_door maze i j w h = function
-  | North -> maze.(i + j * w).n <- Opened
-  | South -> maze.(i + j * w).s <- Opened
-  | East  -> maze.(i + j * w).e <- Opened
-  | West  -> maze.(i + j * w).w <- Opened
+let open_door tile = function
+  | North -> tile.n <- Opened
+  | South -> tile.s <- Opened
+  | East  -> tile.e <- Opened
+  | West  -> tile.w <- Opened
