@@ -1,6 +1,6 @@
 open Tile
 
-type maze = { mutable tiles: Tile.tile array; width: int; height: int }
+type maze = { tiles: Tile.tile array; width: int; height: int }
 
 let access maze i j =
   maze.tiles.(i + j * maze.width)
