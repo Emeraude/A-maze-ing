@@ -9,13 +9,13 @@ let rec solve maze curr last finish =
     maze.tiles.(curr).id <- -1;
     true;
   end
-  else if (Door.isOpened maze.tiles.(curr).n && curr - maze.width != last
+  else if (Door.is_opened maze.tiles.(curr).n && curr - maze.width != last
 	  && solve maze (curr - maze.width) curr finish)
-      || (Door.isOpened maze.tiles.(curr).s && curr + maze.width != last
+      || (Door.is_opened maze.tiles.(curr).s && curr + maze.width != last
 	 && solve maze (curr + maze.width) curr finish)
-      || (Door.isOpened maze.tiles.(curr).e && curr + 1 != last
+      || (Door.is_opened maze.tiles.(curr).e && curr + 1 != last
 	 && solve maze (curr + 1) curr finish)
-      || (Door.isOpened maze.tiles.(curr).w && curr - 1 != last
+      || (Door.is_opened maze.tiles.(curr).w && curr - 1 != last
 	 && solve maze (curr - 1) curr finish)
   then begin
     maze.tiles.(curr).id <- -1;
