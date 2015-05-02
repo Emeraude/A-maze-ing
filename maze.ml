@@ -1,9 +1,7 @@
-open Door
 open Tile
 
 let rec contagion maze w h i j id1 id2 =
-  if i < 0 || j < 0 || i = w || j = h then ()
-  else if maze.(i + j * w).id != id1 then ()
+  if i < 0 || j < 0 || i = w || j = h || maze.(i + j * w).id != id1 then ()
   else
     begin
       maze.(i + j * w).id <- id2;
@@ -13,25 +11,18 @@ let rec contagion maze w h i j id1 id2 =
       contagion maze w h i (j + 1) id1 id2
     end
 
-let open_door maze i j w h = function
-  | North -> maze.(i + j * w).n <- Opened
-  | South -> maze.(i + j * w).s <- Opened
-  | East	-> maze.(i + j * w).e <- Opened
-  | West	-> maze.(i + j * w).w <- Opened
-
 let open_door_neighbour maze i j w h id = function
-  | North ->	open_door maze i (j - 1) w h South;
-              contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
-  | South ->	open_door maze i (j + 1) w h North;
-              contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
-  | East	->	open_door (maze) (i + 1) (j) w h (West);
-              contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
-  | West	->	open_door (maze) (i - 1) (j) w h (East);
-              contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
+  | North ->	Tile.open_door maze i (j - 1) w h South;
+		contagion maze w h i (j - 1) (maze.(i + (j - 1) * w).id) (maze.(i + j * w).id)
+  | South ->	Tile.open_door maze i (j + 1) w h North;
+		contagion maze w h i (j + 1) (maze.(i + (j + 1) * w).id) (maze.(i + j * w).id)
+  | East  ->	Tile.open_door (maze) (i + 1) (j) w h (West);
+		contagion (maze) w h (i + 1) j (maze.(i + 1 + j * w).id) (maze.(i + j * w).id)
+  | West  ->	Tile.open_door (maze) (i - 1) (j) w h (East);
+		contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
 
 let open_dir_door maze next cond dir w h i j =
-  if cond then false
-  else if maze.(i + j * w).id = maze.(i + j * w + next).id then false
+  if cond || maze.(i + j * w).id = maze.(i + j * w + next).id then false
   else
     begin
       open_door maze i j w h dir;
@@ -65,7 +56,7 @@ let generate_maze maze w h =
 (* Puts a different colour on each tile of the maze *)
 
 let initialize_maze w h =
-  Array.mapi (fun i a -> Tile.new_tile i) (Array.make(w *h) Tile.default)
+  Array.mapi (fun i a -> Tile.new_tile i) (Array.make(w * h) Tile.default)
 
 let create_maze w h =
   Random.self_init ();
