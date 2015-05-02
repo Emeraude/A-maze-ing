@@ -1,13 +1,13 @@
 type door = Opened | Closed
 
-let isOpened = function
+let is_opened = function
   | Opened -> true
   | Closed -> false
 
-let openDoor = function
+let open_door = function
   | Opened -> raise (Invalid_argument "Door already opened")
   | Closed -> Opened
 
-let closeDoor = function
+let close_door = function
   | Opened -> Closed
   | Closed -> raise (Invalid_argument "Door already closed")
