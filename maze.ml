@@ -29,45 +29,27 @@ let open_door_neighbour maze i j w h id = function
   | West	->	open_door (maze) (i - 1) (j) w h (East);
               contagion (maze) w h (i - 1) j (maze.(i - 1 + j * w).id) (maze.(i + j * w).id)
 
+let open_dir_door maze next cond dir w h i j =
+  if cond then false
+  else if maze.(i + j * w).id = maze.(i + j * w + next).id then false
+  else
+    begin
+      open_door maze i j w h dir;
+      open_door_neighbour maze i j w h maze.(i + j * w).id dir;
+      true;
+    end
+
 (* Check if door can be open (within the maze's bounds) *)
 
 let open_random_door maze w h =
-	let i = Random.int w
-	and j = Random.int h
-	and dir = Random.int 4 in
+  let i = Random.int w
+  and j = Random.int h
+  and dir = Random.int 4 in
   match dir with
-    | 0 -> if j = 0 then false
-      else if maze.(i + j * w).id = maze.(i + j * w - w).id then false
-      else
-      begin
-        open_door maze i j w h North;
-        open_door_neighbour maze i j w h maze.(i + j * w).id North;
-        true;
-      end
-    | 1 -> if j = h - 1 then false
-      else if maze.(i + j * w).id = maze.(i + j * w + w).id then false
-      else
-      begin
-        open_door maze i j w h South;
-        open_door_neighbour maze i j w h maze.(i + j * w).id South;
-        true;
-      end
-    | 2 -> if i = w - 1 then false
-      else if maze.(i + j * w).id = maze.(i + 1 + j * w).id then false
-      else
-      begin
-        open_door maze i j w h East;
-        open_door_neighbour maze i j w h maze.(i + j * w).id East;
-        true;
-      end
-    | 3 -> if i = 0 then false
-      else if maze.(i + j * w).id = maze.(i - 1 + j * w).id then false
-      else
-      begin
-        open_door maze i j w h West;
-        open_door_neighbour maze i j w h maze.(i + j * w).id West;
-        true;
-      end
+    | 0 -> open_dir_door maze (-w) (j = 0) North w h i j
+    | 1 -> open_dir_door maze w (j = h - 1) South w h i j
+    | 2 -> open_dir_door maze 1 (i = w - 1) East w h i j
+    | 3 -> open_dir_door maze (-1) (i = 0) West w h i j
     | _ -> false
 
 (* Converted represents the number of tiles converted *)
