@@ -54,6 +54,7 @@ let draw_tile screen maze i j multiplier =
 let rec wait_for_escape () =
   match wait_event () with
     | KEYDOWN {keysym=KEY_ESCAPE; _} ->	Sdl.quit ()
+    | KEYDOWN {keysym=KEY_q; _} ->	Sdl.quit ()
     | _ ->				wait_for_escape ()
 
 let draw_maze maze =
