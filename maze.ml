@@ -2,6 +2,10 @@ open Tile
 
 type maze = { tiles: Tile.tile array; width: int; height: int }
 
+let int_of_bool = function
+  | true -> 1
+  | false -> 0
+
 let access maze i j =
   maze.tiles.(i + j * maze.width)
 
@@ -50,13 +54,9 @@ let open_random_door maze =
 
 (* Converted represents the number of tiles converted *)
 
-let generate_maze maze =
-  let converted = ref 0
-  and max = ref (maze.width * maze.height - 1) in
-  while converted < max do
-    if open_random_door maze then converted := !converted + 1;
-  done;
-  maze
+let rec generate_maze maze remaining = match remaining with
+  | 0 -> maze
+  | _ -> generate_maze maze (remaining - (int_of_bool (open_random_door maze )))
 
 (* Puts a different colour on each tile of the maze *)
 
@@ -65,4 +65,4 @@ let initialize_maze w h =
 
 let create_maze w h =
   Random.self_init ();
-  generate_maze { tiles = (initialize_maze w h); width = w; height = h }
+  generate_maze { tiles = (initialize_maze w h); width = w; height = h } (w * h - 1)
