@@ -10,7 +10,7 @@ let new_tile i =
   { n = Closed; s = Closed; e = Closed; w = Closed; id = i }
 
 let open_door tile = function
-  | North -> tile.n <- (Door.open_door tile.n)
-  | South -> tile.n <- (Door.open_door tile.n)
-  | East  -> tile.n <- (Door.open_door tile.n)
-  | West  -> tile.n <- (Door.open_door tile.n)
+  | North -> tile.n <- Opened
+  | South -> tile.s <- Opened
+  | East  -> tile.e <- Opened
+  | West  -> tile.w <- Opened
