@@ -11,3 +11,6 @@ let _ =
     | Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be positive and less than 250\n"
+    | Sdl.SDL_init_exception (s)
+    | Sdlvideo.Video_exn (s)
+    | Sdlloader.SDLloader_exception (s) -> Printf.eprintf "SDL error: %s\n" s
