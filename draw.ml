@@ -40,11 +40,13 @@ let draw_maze_tiles maze screen =
     done
   done
 
+let get_multiplier a b = 40
+
 let draw_maze maze =
   Sdl.init [`VIDEO];
   at_exit Sdl.quit;
   let screen = Sdlvideo.set_video_mode (maze.width * 40) (maze.height * 40) [`HWSURFACE] in
-  let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
+  let colour = Sdlvideo.map_RGB screen Sdlvideo.black in
   Sdlvideo.fill_rect screen colour;
   draw_maze_tiles maze screen;
   Sdlvideo.flip screen;
