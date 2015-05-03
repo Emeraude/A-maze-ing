@@ -55,6 +55,32 @@ let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis wit
 let end_is_reached game =
   game.jew = game.camp
 
-let rec launch width height lvl = match lvl with
+let events = function
+    | Sdlevent.QUIT ->                                                  Sdl.quit ()
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_ESCAPE; _} ->        Sdl.quit ()
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->             Sdl.quit ()
+    | _ ->								()
+
+let rec get_events () =
+  match Sdlevent.poll () with
+    | None -> ()
+    | Some ev -> events ev; get_events ()
+
+let rec new_level screen width height = function
   | 0 -> ()
-  | _ -> ignore(Maze.create_maze width height); Printf.printf "level %d\n" lvl; launch width height (lvl - 1)
+  | lvl -> begin
+    let maze = Maze.create_maze width height 0 in
+    ignore (init_game maze);
+    Printf.printf "level %d\n" lvl;
+    new_level screen width height (lvl - 1)
+  end
+
+let launch width height lvl =
+  begin
+    Sdl.init [`VIDEO];
+    at_exit Sdl.quit;
+    let multiplier = Draw.get_multiplier width height in
+    let screen = Sdlvideo.set_video_mode (width * multiplier) (height * multiplier) [`HWSURFACE] in
+    Sdlvideo.fill_rect screen (Sdlvideo.map_RGB screen Sdlvideo.white);
+    new_level screen width height lvl
+  end
