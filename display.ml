@@ -8,13 +8,13 @@ let rec print_top w = match w with
 
 let rec print_first_line maze i j = match maze.width - j with
   | 0 -> ()
-  | _ -> match (Maze.access maze j i).e.st with
+  | _ -> match (Maze.access maze j i).doors.(0) with
       | Closed -> Printf.printf "   |"; print_first_line maze i (j + 1)
       | Opened -> Printf.printf "    "; print_first_line maze i (j + 1)
 
 let rec print_second_line maze i j = match maze.width - j with
   | 0 -> ()
-  | _ -> match (Maze.access maze j i).s.st with
+  | _ -> match (Maze.access maze j i).doors.(1) with
       | Closed -> Printf.printf "----"; print_second_line maze i (j + 1)
       | Opened -> Printf.printf "   -"; print_second_line maze i (j + 1)
 

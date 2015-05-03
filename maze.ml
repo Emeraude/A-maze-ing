@@ -51,7 +51,7 @@ let rec generate_maze maze remaining = match remaining with
 (* Puts a different colour on each tile of the maze *)
 
 let initialize_maze w h f =
-  Array.mapi (fun i a -> Tile.new_tile i) (Array.make(w * h) (Tile.new_tile 0))
+  Array.mapi (fun i a -> Tile.new_tile i (f * 2 + 4)) (Array.make(w * h) (Tile.new_tile 0 (f * 2 + 4)))
 
 let create_maze w h f =
   Random.self_init ();
@@ -62,7 +62,7 @@ let create_maze w h f =
     form = f;
     dirs = if f = 0
       then fun _ _ -> Tile.dirs_sq
-      else fun i _ -> if i mod 2 = 0
+      else fun _ j -> if j mod 2 = 0
         then Tile.dirs_hex_even
         else Tile.dirs_hex_odd
   } in

@@ -1,6 +1,8 @@
 open Tile
 open Maze
 
+exception Found
+
 (* On met les id à -1 si on est sur le chemin vers l'arrivée *)
 
 let rec solve maze curr last finish =
@@ -9,16 +11,18 @@ let rec solve maze curr last finish =
     maze.tiles.(curr).id <- -1;
     true;
   end
-  else if (Door.is_opened maze.tiles.(curr).n && curr - maze.width != last
-	  && solve maze (curr - maze.width) curr finish)
-      || (Door.is_opened maze.tiles.(curr).s && curr + maze.width != last
-	 && solve maze (curr + maze.width) curr finish)
-      || (Door.is_opened maze.tiles.(curr).e && curr + 1 != last
-	 && solve maze (curr + 1) curr finish)
-      || (Door.is_opened maze.tiles.(curr).w && curr - 1 != last
-	 && solve maze (curr - 1) curr finish)
-  then begin
+  else let i = curr mod maze.width
+  and j = curr / maze.width in
+  let dirs = maze.dirs i j in
+    try Array.iteri
+      begin fun n d ->
+        let next = (i + dirs.(n).x + (j + dirs.(n).y) * maze.width) in
+        if   Door.is_opened d && next != last
+    	  && solve maze next curr finish
+    	then raise Found
+      end
+      (access maze i j).doors;
+    false
+  with Found ->
     maze.tiles.(curr).id <- -1;
-    true;
-  end
-  else false
+    true

@@ -12,11 +12,11 @@ let preloaded_images = [|
 
 let draw_tile screen maze i j multiplier =
   let img_id =
-    match (Maze.access maze j i) with (* Seulement prendre nord et ouest en compte *)
-      | {n={st=Opened; _}; w={st=Closed; _}; _} -> 0
-      | {n={st=Opened; _}; w={st=Opened; _}; _} -> 1
-      | {n={st=Closed; _}; w={st=Opened; _}; _} -> 2
-      | {n={st=Closed; _}; w={st=Closed; _}; _} -> 3 in
+    match (Maze.access maze j i).doors.(0), (Maze.access maze j i).doors.(3) with
+      | Opened, Closed -> 0
+      | Opened, Opened -> 1
+      | Closed, Opened -> 2
+      | Closed, Closed -> 3 in
   let img = preloaded_images.(img_id)
   and img_pos = Sdlvideo.rect (j * multiplier) (i * multiplier) multiplier multiplier in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();

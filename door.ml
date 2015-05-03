@@ -1,14 +1,13 @@
-type status = Opened | Closed
-type door = { x: int; y: int; mutable st: status }
+type door = Opened | Closed
 
 let is_opened = function
-  | { st=Opened; _ } -> true
-  | { st=Closed; _ } -> false
+  | Opened -> true
+  | Closed -> false
 
 let open_door = function
-  | { st=Opened; _ } -> raise (Invalid_argument "Door already opened")
-  | { st=Closed; _ } -> Opened
+  | Opened -> raise (Invalid_argument "Door already opened")
+  | Closed -> Opened
 
 let close_door = function
-  | { st=Opened; _ } -> Closed
-  | { st=Closed; _ } -> raise (Invalid_argument "Door already closed")
+  | Opened -> Closed
+  | Closed -> raise (Invalid_argument "Door already closed")
