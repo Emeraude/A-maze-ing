@@ -33,17 +33,23 @@ let rec wait_for_escape () =
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->		Sdl.quit ()
     | _ ->								wait_for_escape ()
 
-let draw_maze maze =
-  Sdl.init [`VIDEO];
-  at_exit Sdl.quit;
-  let multiplier = if maze.width > maze.height then (900 / maze.width) else (900 / maze.height) in
-  let screen = Sdlvideo.set_video_mode (maze.width * multiplier) (maze.height * multiplier) [`HWSURFACE] in
-  let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
-  Sdlvideo.fill_rect screen colour;
+let get_multiplier w h =
+  if w > h then (900 / w) else (900 / h)
+
+let draw_maze maze screen multiplier =
   for i = 0 to maze.height - 1 do
     for j = 0 to maze.width - 1 do
       draw_tile screen maze i j multiplier
     done
-  done;
+  done
+
+let draw_maze maze =
+  Sdl.init [`VIDEO];
+  at_exit Sdl.quit;
+  let multiplier = get_multiplier maze.width maze.height in
+  let screen = Sdlvideo.set_video_mode (maze.width * multiplier) (maze.height * multiplier) [`HWSURFACE] in
+  let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
+  Sdlvideo.fill_rect screen colour;
+  draw_maze maze screen multiplier;
   Sdlvideo.flip screen;
   wait_for_escape ()
