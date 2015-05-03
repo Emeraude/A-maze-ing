@@ -1,4 +1,5 @@
 open Maze
+open Tile
 
 type game = {nazis: (int * int) list;
 	     jew: int * int;
@@ -52,9 +53,25 @@ let jew_move game pos =
    pieces = game.pieces;
    teleporters = game.teleporters}
 
+let move_right maze game = match game.jew with
+  | (x, y) -> if Door.is_opened (Maze.access maze x y).doors.(2) then jew_move game (x + 1, y) else game
+
+let move_left maze game = match game.jew with
+  | (x, y) -> if Door.is_opened (Maze.access maze x y).doors.(3) then jew_move game (x - 1, y) else game
+
+let move_up maze game = match game.jew with
+  | (x, y) -> if Door.is_opened (Maze.access maze x y).doors.(0) then jew_move game (x, y - 1) else game
+
+let move_down maze game = match game.jew with
+  | (x, y) -> if Door.is_opened (Maze.access maze x y).doors.(1) then jew_move game (x, y + 1) else game
+
 let take_teleporter game =
   let other_tp = (List.filter (fun a -> a != game.jew) game.teleporters) in
   jew_move game (List.nth other_tp (Random.int (List.length other_tp)))
+
+let check_tp game = match List.filter (fun a -> a = game.jew) game.teleporters with
+  | [] -> game
+  | _ -> take_teleporter game
 
 let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis with
   | [] -> true
@@ -63,20 +80,20 @@ let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis wit
 let end_is_reached game =
   game.jew = game.camp
 
-let events game = function
+let events maze game = function
     | Sdlevent.QUIT ->							exit 0
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_ESCAPE; _} ->	exit 0
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->		exit 0
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_LEFT; _} ->		print_endline "left"
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_UP; _} ->		print_endline "up"
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_DOWN; _} ->		print_endline "down"
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_RIGHT; _} ->		print_endline "right"
-    | _ ->								()
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_RIGHT; _} ->		check_tp (move_right maze game)
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_UP; _} ->		check_tp (move_up maze game)
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_DOWN; _} ->		check_tp (move_down maze game)
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_LEFT; _} ->		check_tp (move_left maze game)
+    | _ ->								game
 
-let rec get_events game =
+let rec get_events maze game =
   match Sdlevent.poll () with
-    | None -> ()
-    | Some ev -> events game ev; get_events game
+    | None -> game
+    | Some ev -> get_events maze (events maze game ev)
 
 let put_sprite screen maze img (x, y) =
   Sdlvideo.blit_surface ~dst_rect:(Sdlvideo.rect(x * 40) (y * 40) 40 40) ~src:img ~dst:screen ()
@@ -107,7 +124,7 @@ let draw_sprites screen maze game =
 
 let rec game_loop screen maze game =
   begin
-    get_events ();
+    let game = get_events maze game in
     Sdltimer.delay 50;
     (* faire bouger les nazis *)
     (* faire apparaitre les pieces *)
@@ -117,14 +134,16 @@ let rec game_loop screen maze game =
     if jew_is_alive game && end_is_reached game = false
     then
       game_loop screen maze game
+    else
+      jew_is_alive game && end_is_reached game
   end
 
 let rec new_level screen width height = function
   | 0 -> ()
   | lvl -> begin
     let maze = Maze.create_maze width height 0 in
-    game_loop screen maze (init_game maze);
-    new_level screen width height (lvl - 1)
+    if game_loop screen maze (init_game maze) then
+      new_level screen width height (lvl - 1)
   end
 
 let launch width height lvl =
