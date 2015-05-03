@@ -55,5 +55,6 @@ let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis wit
 let end_is_reached game =
   game.jew = game.camp
 
-let launch maze =
-  ()
+let rec launch width height lvl = match lvl with
+  | 0 -> ()
+  | _ -> ignore(Maze.create_maze width height); Printf.printf "level %d\n" lvl; launch width height (lvl - 1)
