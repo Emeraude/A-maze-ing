@@ -2,7 +2,7 @@ SRC1 = door.ml tile.ml maze.ml display.ml step1.ml
 SRC2 = door.ml tile.ml maze.ml draw.ml step2.ml
 SRC3 = door.ml tile.ml maze.ml draw.ml solve.ml step3.ml
 SRC4 = door.ml tile.ml maze.ml draw.ml draw_hex.ml solve.ml step4.ml
-SRC5 = door.ml tile.ml maze.ml draw.ml game.ml solve.ml step5.ml
+SRC5 = audio.ml door.ml tile.ml maze.ml draw.ml game.ml solve.ml step5.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 
@@ -58,10 +58,10 @@ step5: step5.native
 	cp $< $@
 
 step5.byte: $(SRC5)
-	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
+	ocamlfind ocamlc $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -package sdl.sdlmixer  -linkpkg
 
 step5.native: $(SRC5)
-	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -linkpkg
+	ocamlfind ocamlopt $(OCAMLFLAGS) $^ -o $@ -package sdl -package sdl.sdlimage -package sdl.sdlmixer -linkpkg
 
 clean:
 	$(RM) *.cmo *.cmi *.o *.cmx

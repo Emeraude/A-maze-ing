@@ -14,6 +14,8 @@ let images = [|
   Sdlloader.load_image "./images/tp.png";
 	     |]
 
+let music_filename = "audio/nazi_audio.ogg"
+
 let int_sqrt n =
   int_of_float (sqrt (float_of_int n))
 
@@ -109,10 +111,14 @@ let rec game_loop screen maze game =
   begin
     get_events ();
     Sdltimer.delay 50;
+    
     (* faire bouger les nazis *)
     (* faire apparaitre les pieces *)
     Draw.draw_maze_tiles screen maze false;
     draw_sprites screen maze game;
+    if Sdlmixer.playing_music ();
+       then
+	 ();
     Sdlvideo.flip screen;
     if jew_is_alive game && end_is_reached game = false
     then
@@ -129,10 +135,13 @@ let rec new_level screen width height = function
 
 let launch width height lvl =
   begin
-    Sdl.init [`VIDEO];
+    Sdl.init [`VIDEO; `AUDIO];
     at_exit Sdl.quit;
+    Audio.open_audio ();
     let multiplier = Draw.get_multiplier width height in
     let screen = Sdlvideo.set_video_mode (width * multiplier) (height * multiplier) [`HWSURFACE] in
     Sdlvideo.fill_rect screen (Sdlvideo.map_RGB screen Sdlvideo.black);
-    new_level screen width height lvl
+    let music = Audio.play_music music_filename in
+    new_level screen width height lvl;
+    Audio.close_music music;
   end
