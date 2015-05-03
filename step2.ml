@@ -1,4 +1,4 @@
-let usage_msg = "Usage: step1 [width] [height]"
+let usage_msg = "Usage: step1 <width> <height>"
 
 let _ =
   try

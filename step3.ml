@@ -1,4 +1,4 @@
-let usage_msg = "Usage: step3 [width] [height]"
+let usage_msg = "Usage: step3 <width> <height>"
 
 let _ =
   try
@@ -10,6 +10,7 @@ let _ =
 	 Draw.draw_maze maze true
     else raise (Invalid_argument "wrong input")
   with
+    | Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be more than 6 and less than 250\n"
     | Sdl.SDL_init_exception (s)

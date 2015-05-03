@@ -1,4 +1,4 @@
-let usage_msg = "Usage: step4 [width] [height] [--square | --hexagonal]"
+let usage_msg = "Usage: step4 <width> <height> --square|--hexagonal"
 
 let _ =
   try
@@ -17,6 +17,7 @@ let _ =
 	 Draw_hex.draw_maze maze
     else raise (Invalid_argument "wrong input")
   with
+    | Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be more than 6 and less than 250.\nForm must be hexagonal or square\n"
     | Sdl.SDL_init_exception (s)

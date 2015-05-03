@@ -1,4 +1,4 @@
-let usage_msg = "Usage: step1 [width] [height]"
+let usage_msg = "Usage: step1 <width> <height>"
 
 let _ =
   try
@@ -10,3 +10,4 @@ let _ =
   with
     | Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be positive and less than 250\n"
+    | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg

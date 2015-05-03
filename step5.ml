@@ -1,4 +1,4 @@
-let usage_msg = "Usage: step5 [width] [height] [theme]"
+let usage_msg = "Usage: step5 <width> <height> [theme]"
 
 let _ =
   try
@@ -13,6 +13,7 @@ let _ =
 	Game.launch width height 3 "nazi"
     else raise (Invalid_argument "wrong input")
   with
+    | Failure ("int_of_string") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
     | Invalid_argument ("wrong input") -> Printf.eprintf "width and height must be more than 6 and less than 250\n"
     | Sdl.SDL_init_exception (s)
