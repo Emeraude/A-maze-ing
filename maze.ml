@@ -18,11 +18,9 @@ let access maze i j =
 let rec contagion maze i j id1 id2 =
   if i >= 0 && j >= 0 && i < maze.width && j < maze.height && (access maze i j).id = id1
   then begin
-      let dirs = maze.dirs i j in
       (access maze i j).id <- id2;
-      for n = 0 to 3 + 2 * maze.form do
-        contagion maze (i + dirs.(n).x) (j + dirs.(n).y) id1 id2
-      done
+      let dirs = maze.dirs i j in
+      Array.iter (fun d -> contagion maze (i + d.x) (j + d.y) id1 id2) dirs
     end
 
 let open_dir_door maze dir id i j new_i new_j =
