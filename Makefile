@@ -2,7 +2,7 @@ SRC1 = door.ml tile.ml maze.ml display.ml step1.ml
 SRC2 = door.ml tile.ml maze.ml draw.ml step2.ml
 SRC3 = door.ml tile.ml maze.ml draw.ml solve.ml step3.ml
 SRC4 = door.ml tile.ml maze.ml draw.ml draw_hex.ml solve.ml step4.ml
-SRC5 = door.ml tile.ml maze.ml draw.ml game.ml solve.ml step4.ml
+SRC5 = door.ml tile.ml maze.ml draw.ml game.ml solve.ml step5.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 
