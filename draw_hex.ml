@@ -48,7 +48,7 @@ let draw_maze maze =
   Sdl.init [`VIDEO];
   at_exit Sdl.quit;
   let screen = Sdlvideo.set_video_mode (maze.width * 32 + 16) (maze.height * 30) [`HWSURFACE] in
-  let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
+  let colour = Sdlvideo.map_RGB screen Sdlvideo.black in
   Sdlvideo.fill_rect screen colour;
   for i = 0 to maze.height - 1 do
     for j = 0 to maze.width - 1 do
