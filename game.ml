@@ -6,6 +6,14 @@ type game = {nazis: (int * int) list;
 	     pieces: (int * int) list;
 	     teleporters: (int * int) list}
 
+let images = [|
+  Sdlloader.load_image "./images/camp.png";
+  Sdlloader.load_image "./images/coin.png";
+  Sdlloader.load_image "./images/jew.png";
+  Sdlloader.load_image "./images/nazi.png";
+  Sdlloader.load_image "./images/tp.png";
+	     |]
+
 let int_sqrt n =
   int_of_float (sqrt (float_of_int n))
 
@@ -28,7 +36,7 @@ let create_teleporters maze =
   let rec _create_teleporters n = match n with
     | 0 -> []
     | _ -> (random_pos maze)::(_create_teleporters (n - 1))
-  in _create_teleporters ((int_sqrt (maze.height * maze.width)) / 15 + 1)
+  in _create_teleporters ((int_sqrt (maze.height * maze.width)) / 5 + 2)
 
 let init_game maze =
   {nazis = create_nazis maze;
@@ -55,23 +63,67 @@ let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis wit
 let end_is_reached game =
   game.jew = game.camp
 
-let events = function
-    | Sdlevent.QUIT ->                                                  Sdl.quit ()
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_ESCAPE; _} ->        Sdl.quit ()
-    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->             Sdl.quit ()
+let events game = function
+    | Sdlevent.QUIT ->							exit 0
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_ESCAPE; _} ->	exit 0
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->		exit 0
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_LEFT; _} ->		print_endline "left"
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_UP; _} ->		print_endline "up"
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_DOWN; _} ->		print_endline "down"
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_RIGHT; _} ->		print_endline "right"
     | _ ->								()
 
-let rec get_events () =
+let rec get_events game =
   match Sdlevent.poll () with
     | None -> ()
-    | Some ev -> events ev; get_events ()
+    | Some ev -> events game ev; get_events game
+
+let put_sprite screen maze img (x, y) =
+  Sdlvideo.blit_surface ~dst_rect:(Sdlvideo.rect(x * 40) (y * 40) 40 40) ~src:img ~dst:screen ()
+
+let draw_teleporters screen maze game =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/tp.png") a) game.teleporters
+
+let draw_nazis screen maze game =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/nazi.png") a) game.nazis
+
+let draw_pieces screen maze game =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/coin.png") a) game.pieces
+
+let draw_jew screen maze game =
+  put_sprite screen maze (Sdlloader.load_image "./images/jew.png") game.jew
+
+let draw_camp screen maze game =
+  put_sprite screen maze (Sdlloader.load_image "./images/camp.png") game.camp
+
+let draw_sprites screen maze game =
+  begin
+    draw_pieces screen maze game;
+    draw_teleporters screen maze game;
+    draw_nazis screen maze game;
+    draw_camp screen maze game;
+    draw_jew screen maze game
+  end
+
+let rec game_loop screen maze game =
+  begin
+    get_events ();
+    Sdltimer.delay 50;
+    (* faire bouger les nazis *)
+    (* faire apparaitre les pieces *)
+    Draw.draw_maze_tiles screen maze false;
+    draw_sprites screen maze game;
+    Sdlvideo.flip screen;
+    if jew_is_alive game && end_is_reached game = false
+    then
+      game_loop screen maze game
+  end
 
 let rec new_level screen width height = function
   | 0 -> ()
   | lvl -> begin
     let maze = Maze.create_maze width height 0 in
-    ignore (init_game maze);
-    Printf.printf "level %d\n" lvl;
+    game_loop screen maze (init_game maze);
     new_level screen width height (lvl - 1)
   end
 
@@ -81,6 +133,6 @@ let launch width height lvl =
     at_exit Sdl.quit;
     let multiplier = Draw.get_multiplier width height in
     let screen = Sdlvideo.set_video_mode (width * multiplier) (height * multiplier) [`HWSURFACE] in
-    Sdlvideo.fill_rect screen (Sdlvideo.map_RGB screen Sdlvideo.white);
+    Sdlvideo.fill_rect screen (Sdlvideo.map_RGB screen Sdlvideo.black);
     new_level screen width height lvl
   end

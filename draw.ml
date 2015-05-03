@@ -10,7 +10,7 @@ let preloaded_images = [|
   Sdlloader.load_image "./images/path.png";
 		       |]
 
-let draw_tile screen maze i j =
+let draw_tile screen maze i j hearts =
   let img_id =
     match (Maze.access maze j i).doors.(0), (Maze.access maze j i).doors.(3) with
       | Opened, Opened -> 0
@@ -20,7 +20,7 @@ let draw_tile screen maze i j =
   let img = preloaded_images.(img_id)
   and img_pos = Sdlvideo.rect (j * 40) (i * 40) 40 40 in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
-  if (Maze.access maze j i).id = -1 then begin
+  if hearts && (Maze.access maze j i).id = -1 then begin
     let img_path = preloaded_images.(4)
     and img_path_pos = Sdlvideo.rect (j * 40 + 4) (i * 40 + 4) 32 32 in
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
@@ -33,21 +33,21 @@ let rec wait_for_escape () =
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->		Sdl.quit ()
     | _ ->								wait_for_escape ()
 
-let draw_maze_tiles maze screen =
+let draw_maze_tiles screen maze hearts =
   for i = 0 to maze.height - 1 do
     for j = 0 to maze.width - 1 do
-      draw_tile screen maze i j
+      draw_tile screen maze i j hearts
     done
   done
 
 let get_multiplier a b = 40
 
-let draw_maze maze =
+let draw_maze maze hearts =
   Sdl.init [`VIDEO];
   at_exit Sdl.quit;
   let screen = Sdlvideo.set_video_mode (maze.width * 40) (maze.height * 40) [`HWSURFACE] in
   let colour = Sdlvideo.map_RGB screen Sdlvideo.black in
   Sdlvideo.fill_rect screen colour;
-  draw_maze_tiles maze screen;
+  draw_maze_tiles screen maze hearts;
   Sdlvideo.flip screen;
   wait_for_escape ()

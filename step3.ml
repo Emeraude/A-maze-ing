@@ -7,7 +7,7 @@ let _ =
     if width > 6 && height > 6 && width < 250 && height < 250
     then let maze = Maze.create_maze width height 0 in
 	 ignore(Solve.solve maze 0 0 (width * height - 1));
-	 Draw.draw_maze maze
+	 Draw.draw_maze maze true
     else raise (Invalid_argument "wrong input")
   with
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg
