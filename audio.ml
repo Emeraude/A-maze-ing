@@ -10,6 +10,5 @@ let play_music filename =
   Sdlmixer.play_music music;
   music
 
-let close_music music = 
+let close_music music =
   Sdlmixer.free_music music
-  

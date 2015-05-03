@@ -8,16 +8,6 @@ type game = {nazis: (int * int) list;
 	     teleporters: (int * int) list;
 	     score: int}
 
-let images = [|
-  Sdlloader.load_image "./images/camp.png";
-  Sdlloader.load_image "./images/coin.png";
-  Sdlloader.load_image "./images/jew.png";
-  Sdlloader.load_image "./images/nazi.png";
-  Sdlloader.load_image "./images/tp.png";
-	     |]
-
-let music_filename = "audio/nazi_audio.ogg"
-
 let int_sqrt n =
   int_of_float (sqrt (float_of_int n))
 
@@ -120,28 +110,28 @@ let rec get_events maze game =
 let put_sprite screen maze img (x, y) =
   Sdlvideo.blit_surface ~dst_rect:(Sdlvideo.rect(x * 40) (y * 40) 40 40) ~src:img ~dst:screen ()
 
-let draw_teleporters screen maze game =
-  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/tp.png") a) game.teleporters
+let draw_teleporters screen maze game theme =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image ("./themes/" ^ theme ^ "/tp.png")) a) game.teleporters
 
-let draw_nazis screen maze game =
-  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/nazi.png") a) game.nazis
+let draw_nazis screen maze game theme =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image ("./themes/" ^ theme ^ "/nazi.png")) a) game.nazis
 
-let draw_pieces screen maze game =
-  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image "./images/coin.png") a) game.pieces
+let draw_pieces screen maze game theme =
+  List.iter (fun a -> put_sprite screen maze (Sdlloader.load_image ("./themes/" ^ theme ^ "/coin.png")) a) game.pieces
 
-let draw_jew screen maze game =
-  put_sprite screen maze (Sdlloader.load_image "./images/jew.png") game.jew
+let draw_jew screen maze game theme =
+  put_sprite screen maze (Sdlloader.load_image ("./themes/" ^ theme ^ "/jew.png")) game.jew
 
-let draw_camp screen maze game =
-  put_sprite screen maze (Sdlloader.load_image "./images/camp.png") game.camp
+let draw_camp screen maze game theme =
+  put_sprite screen maze (Sdlloader.load_image ("./themes/" ^ theme ^ "/camp.png")) game.camp
 
-let draw_sprites screen maze game =
+let draw_sprites screen maze game theme =
   begin
-    draw_pieces screen maze game;
-    draw_teleporters screen maze game;
-    draw_nazis screen maze game;
-    draw_camp screen maze game;
-    draw_jew screen maze game
+    draw_pieces screen maze game theme;
+    draw_teleporters screen maze game theme;
+    draw_nazis screen maze game theme;
+    draw_camp screen maze game theme;
+    draw_jew screen maze game theme
   end
 
 let two_to_one_pos maze = function
@@ -169,36 +159,36 @@ let add_pieces maze game t = match t mod 16 with
 	  score = game.score}
   | _ -> game
 
-let rec game_loop screen maze game t =
+let rec game_loop screen maze game theme t =
   begin
     let game = get_events maze game in
     Sdltimer.delay 50;
     let game = add_pieces maze (move_nazis maze game t) t in
     Draw.draw_maze_tiles screen maze false;
-    draw_sprites screen maze game;
+    draw_sprites screen maze game theme;
     if Sdlmixer.playing_music ();
        then
 	 ();
     Sdlvideo.flip screen;
     if jew_is_alive game && end_is_reached game = false
     then
-      game_loop screen maze game (t + 1)
+      game_loop screen maze game theme (t + 1)
     else
       match jew_is_alive game && end_is_reached game with
 	| true -> print_endline "Welcome at home ! +200"; true
 	| false -> false
   end
 
-let rec new_level screen width height = function
+let rec new_level screen width height theme = function
   | 0 -> ()
   | lvl -> begin
     let maze = Maze.create_maze width height 0 in
     let game = init_game maze (3 - lvl * 200) in
-    if game_loop screen maze game 0 then
-      new_level screen width height (lvl - 1)
+    if game_loop screen maze game theme 0 then
+      new_level screen width height theme (lvl - 1)
   end
 
-let launch width height lvl =
+let launch width height lvl theme =
   begin
     Sdl.init [`VIDEO; `AUDIO];
     at_exit Sdl.quit;
@@ -206,7 +196,7 @@ let launch width height lvl =
     let multiplier = Draw.get_multiplier width height in
     let screen = Sdlvideo.set_video_mode (width * multiplier) (height * multiplier) [`HWSURFACE] in
     Sdlvideo.fill_rect screen (Sdlvideo.map_RGB screen Sdlvideo.black);
-    let music = Audio.play_music music_filename in
-    new_level screen width height lvl;
+    let music = Audio.play_music ("./themes/" ^ theme ^ "/audio.ogg") in
+    new_level screen width height theme lvl;
     Audio.close_music music;
   end
