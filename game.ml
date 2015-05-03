@@ -37,5 +37,23 @@ let init_game maze =
    pieces = [];
    teleporters = create_teleporters maze}
 
+let jew_move game pos =
+  {nazis = game.nazis;
+   jew = pos;
+   camp = game.camp;
+   pieces = game.pieces;
+   teleporters = game.teleporters}
+
+let take_teleporter game =
+  let other_tp = (List.filter (fun a -> a != game.jew) game.teleporters) in
+  jew_move game (List.nth other_tp (Random.int (List.length other_tp)))
+
+let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis with
+  | [] -> true
+  | _ -> false
+
+let end_is_reached game =
+  game.jew = game.camp
+
 let launch maze =
   ()
