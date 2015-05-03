@@ -3,26 +3,26 @@ open Tile
 open Maze
 
 let preloaded_images = [|
-  Sdlloader.load_image "./images/0001.png";
-  Sdlloader.load_image "./images/0010.png";
-  Sdlloader.load_image "./images/1000.png";
-  Sdlloader.load_image "./images/1001.png";
+  Sdlloader.load_image "./images/00.png";
+  Sdlloader.load_image "./images/01.png";
+  Sdlloader.load_image "./images/10.png";
+  Sdlloader.load_image "./images/11.png";
   Sdlloader.load_image "./images/path.png";
 		       |]
 
-let draw_tile screen maze i j multiplier =
+let draw_tile screen maze i j =
   let img_id =
     match (Maze.access maze j i).doors.(0), (Maze.access maze j i).doors.(3) with
-      | Opened, Closed -> 0
-      | Opened, Opened -> 1
+      | Opened, Opened -> 0
+      | Opened, Closed -> 1
       | Closed, Opened -> 2
       | Closed, Closed -> 3 in
   let img = preloaded_images.(img_id)
-  and img_pos = Sdlvideo.rect (j * multiplier) (i * multiplier) multiplier multiplier in
+  and img_pos = Sdlvideo.rect (j * 40) (i * 40) 40 40 in
   Sdlvideo.blit_surface ~dst_rect:img_pos ~src:img ~dst:screen ();
   if (Maze.access maze j i).id = -1 then begin
     let img_path = preloaded_images.(4)
-    and img_path_pos = Sdlvideo.rect (j * multiplier + (2 * multiplier) / 5) (i * multiplier + (2 * multiplier) / 5) (multiplier / 4) (multiplier / 4) in
+    and img_path_pos = Sdlvideo.rect (j * 40 + 4) (i * 40 + 4) 32 32 in
     Sdlvideo.blit_surface ~dst_rect:img_path_pos ~src:img_path ~dst:screen();
   end
 
@@ -36,13 +36,12 @@ let rec wait_for_escape () =
 let draw_maze maze =
   Sdl.init [`VIDEO];
   at_exit Sdl.quit;
-  let multiplier = if maze.width > maze.height then (900 / maze.width) else (900 / maze.height) in
-  let screen = Sdlvideo.set_video_mode (maze.width * multiplier) (maze.height * multiplier) [`HWSURFACE] in
+  let screen = Sdlvideo.set_video_mode (maze.width * 40) (maze.height * 40) [`HWSURFACE] in
   let colour = Sdlvideo.map_RGB screen Sdlvideo.white in
   Sdlvideo.fill_rect screen colour;
   for i = 0 to maze.height - 1 do
     for j = 0 to maze.width - 1 do
-      draw_tile screen maze i j multiplier
+      draw_tile screen maze i j
     done
   done;
   Sdlvideo.flip screen;
