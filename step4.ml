@@ -13,7 +13,7 @@ let _ =
     else if String.compare form "--hexagonal" = 0
     && width > 2 && height > 2 && width < 250 && height < 250
     then let maze = Maze.create_maze width height 1 in
-   ignore(Printf.printf "%b\n" (Solve.solve maze 0 0 (width * height - 1)));
+   ignore(Solve.solve maze 0 0 (width * height - 1));
    Draw_hex.draw_maze maze
     else raise (Invalid_argument "wrong input")
   with
