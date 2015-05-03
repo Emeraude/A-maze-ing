@@ -92,10 +92,16 @@ let jew_is_alive game = match List.filter (fun a -> a = game.jew) game.nazis wit
 let end_is_reached game =
   game.jew = game.camp
 
+let rec pause game =
+  match Sdlevent.wait_event () with
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_p; _} -> game
+    | _							 -> pause game
+
 let events maze game = function
     | Sdlevent.QUIT ->							exit 0
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_ESCAPE; _} ->	exit 0
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_q; _} ->		exit 0
+    | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_p; _} ->		pause game
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_RIGHT; _} ->		check_coin (check_tp (move_right maze game))
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_UP; _} ->		check_coin (check_tp (move_up maze game))
     | Sdlevent.KEYDOWN {Sdlevent.keysym=Sdlkey.KEY_DOWN; _} ->		check_coin (check_tp (move_down maze game))
