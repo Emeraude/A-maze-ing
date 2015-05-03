@@ -5,16 +5,16 @@ let _ =
     let width = int_of_string Sys.argv.(1)
     and height = int_of_string Sys.argv.(2)
     and form = Sys.argv.(3) in
-    if String.compare form "--square" = 1
+    if String.compare form "--square" = 0
     && width > 6 && height > 6 && width < 250 && height < 250
-    then let maze = Maze.create_maze width height in
+    then let maze = Maze.create_maze width height 0 in
 	 ignore(Solve.solve maze 0 0 (width * height - 1));
 	 Draw.draw_maze maze
-    else if String.compare form "--hexagonal" = 1
+    else if String.compare form "--hexagonal" = 0
     && width > 6 && height > 6 && width < 250 && height < 250
-    then let maze = Maze.create_maze width height in
+    then let maze = Maze.create_maze width height 1 in
    ignore(Solve.solve maze 0 0 (width * height - 1));
-   Draw.draw_maze maze    
+   Draw_hex.draw_maze maze
     else raise (Invalid_argument "wrong input")
   with
     | Invalid_argument ("index out of bounds") -> Printf.eprintf "%s\n" usage_msg

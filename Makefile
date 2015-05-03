@@ -5,7 +5,7 @@ SRC4 = door.ml tile.ml maze.ml draw.ml draw_hex.ml solve.ml step4.ml
 
 OCAMLFLAGS = -w Aelz -warn-error A -g
 
-all: step1 step1.byte step2 step2.byte step3 step3.byte
+all: step1 step1.byte step2 step2.byte step3 step3.byte step4 step4.byte
 
 # Step1
 
