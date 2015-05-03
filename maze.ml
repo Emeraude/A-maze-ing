@@ -44,9 +44,9 @@ let open_random_door maze =
 
 (* Converted represents the number of tiles converted *)
 
-let rec generate_maze maze remaining = match remaining with
+let rec generate_maze maze = function
   | 0 -> maze
-  | _ -> generate_maze maze (remaining - (int_of_bool (open_random_door maze )))
+  | r -> generate_maze maze (r - (int_of_bool (open_random_door maze)))
 
 (* Puts a different colour on each tile of the maze *)
 
