@@ -123,30 +123,31 @@ let draw_sprites screen maze game =
   end
 
 let two_to_one_pos maze = function
-  | (x, y) -> x * maze.width + y
+  | (x, y) -> y * maze.width + x
 
 let one_to_two_pos maze = function
-  | x -> (x / maze.width, x mod maze.width)
+  | x -> (x mod maze.width, x / maze.width)
 
-let move_nazis maze game =
-  {nazis = List.map (fun a -> one_to_two_pos maze (List.hd (Solve.solve maze (two_to_one_pos maze a) (two_to_one_pos maze a) (two_to_one_pos maze game.jew)))) game.nazis;
-   jew = game.jew;
-   camp = game.camp;
-   pieces = game.pieces;
-   teleporters = game.teleporters}
+let move_nazis maze game t = match t mod 5 with
+  | 0 -> {nazis = List.map (fun a -> one_to_two_pos maze (List.hd (Solve.solve maze (two_to_one_pos maze a) (two_to_one_pos maze a) (two_to_one_pos maze game.jew)))) game.nazis;
+       jew = game.jew;
+       camp = game.camp;
+       pieces = game.pieces;
+       teleporters = game.teleporters}
+  | _ -> game
 
-let rec game_loop screen maze game =
+let rec game_loop screen maze game t =
   begin
     let game = get_events maze game in
     Sdltimer.delay 50;
-    let game = move_nazis maze game in
+    let game = move_nazis maze game t in
     (* faire apparaitre les pieces *)
     Draw.draw_maze_tiles screen maze false;
     draw_sprites screen maze game;
     Sdlvideo.flip screen;
     if jew_is_alive game && end_is_reached game = false
     then
-      game_loop screen maze game
+      game_loop screen maze game (t + 1)
     else
       jew_is_alive game && end_is_reached game
   end
@@ -155,7 +156,7 @@ let rec new_level screen width height = function
   | 0 -> ()
   | lvl -> begin
     let maze = Maze.create_maze width height 0 in
-    if game_loop screen maze (init_game maze) then
+    if game_loop screen maze (init_game maze) 0 then
       new_level screen width height (lvl - 1)
   end
 
