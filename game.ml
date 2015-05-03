@@ -122,11 +122,24 @@ let draw_sprites screen maze game =
     draw_jew screen maze game
   end
 
+let two_to_one_pos maze = function
+  | (x, y) -> x * maze.width + y
+
+let one_to_two_pos maze = function
+  | x -> (x / maze.width, x mod maze.width)
+
+let move_nazis maze game =
+  {nazis = List.map (fun a -> one_to_two_pos maze (List.hd (Solve.solve maze (two_to_one_pos maze a) (two_to_one_pos maze a) (two_to_one_pos maze game.jew)))) game.nazis;
+   jew = game.jew;
+   camp = game.camp;
+   pieces = game.pieces;
+   teleporters = game.teleporters}
+
 let rec game_loop screen maze game =
   begin
     let game = get_events maze game in
     Sdltimer.delay 50;
-    (* faire bouger les nazis *)
+    let game = move_nazis maze game in
     (* faire apparaitre les pieces *)
     Draw.draw_maze_tiles screen maze false;
     draw_sprites screen maze game;
